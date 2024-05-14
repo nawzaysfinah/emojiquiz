@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+import random  # Import the random module for shuffling the list
 
 api_id = "21997526"
 api_hash = "9659ac33986a5f7e02d5802dbf3f598e"
@@ -9,18 +10,30 @@ app = Client("my_emoji_game_bot", bot_token=bot_token, api_id=api_id, api_hash=a
 challenges = [
     {"emojis": "🌍🚀", "answer": "space earth"},
     {"emojis": "🍎❤️", "answer": "apple love"},
-    # Add more challenges here
+    {"emojis": "⚪️🐥🐥", "answer": "white chicks"},
+    {"emojis": "💩👴", "answer": "dirty grandpa"},
+    {"emojis": "🐀👨‍🍳🍲", "answer": "ratatouille"},
+    {"emojis": "🧙‍♂️🧹⚡️", "answer": "harry potter"},
+    {"emojis": "🚢❄️💔", "answer": "titanic"},
+    {"emojis": "👣🥁", "answer": "left toe right toe keep up the tempo"},
+    {"emojis": "🫵🤰🟢", "answer": "mak kau hijau"},
+    {"emojis": "🦆🌒🔙", "answer": "dark knight returns"},
+    {"emojis": "☠️🚕4️⃣🥰", "answer": "death cab for cutie"}
 ]
 current_challenge = {}
 
 @app.on_message(filters.command("start"))
 async def start_game(client, message):
+    user_id = message.from_user.id
+    random.shuffle(challenges)  # Shuffle the challenges at the start of each game
+    current_challenge[user_id] = 0  # Initialize or reset the challenge index
     await message.reply("Welcome to the Emoji Guessing Game! 🎉 Are you ready to play? Send /play to start!")
 
 @app.on_message(filters.command("play"))
 async def send_challenge(client, message):
     user_id = message.from_user.id
-    current_challenge[user_id] = 0  # Initialize or reset the challenge index
+    if user_id not in current_challenge:
+        current_challenge[user_id] = 0  # Ensure challenge is reset if /play is called again
     await send_next_challenge(message, user_id)
 
 async def send_next_challenge(message, user_id):
@@ -60,3 +73,4 @@ async def skip_challenge(client, message):
 
 if __name__ == "__main__":
     app.run()
+
